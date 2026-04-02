@@ -9,13 +9,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Environment and local config
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
 # Build output and caches
 dist/
 build/

@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "probot run ./app.js",
     "webhook-proxy": "npx smee-client --url \"$WEBHOOK_PROXY_URL\" --path /api/github/webhooks --port \"$PORT\""
   },
@@ -19,6 +19,7 @@
     "probot": "^14.3.1"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.14",
     "smee-client": "^5.0.0"
   }

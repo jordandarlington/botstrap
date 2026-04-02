@@ -1,3 +1,4 @@
 minimumSeverity: MEDIUM
 teamsNotification: true
 riskDefinition: https://confluence.example.com/risk-definition
+enabled: true

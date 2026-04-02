@@ -14,8 +14,10 @@ describe("riskPredictorModule", () => {
 
         const context = {
             octokit: {
-                issues: {
-                    createComment,
+                rest: {
+                    issues: {
+                        createComment,
+                    },
                 },
             },
             issue,

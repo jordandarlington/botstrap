@@ -9,7 +9,7 @@ describe("dispatchEvent", () => {
         const getRepoConfig = jest.fn().mockResolvedValue({
             global: { severity: "high" },
             modules: {
-                "risk-predictor": { message: "hello" },
+                "risk-predictor": { enabled: true, message: "hello" },
             },
         });
 
@@ -43,6 +43,7 @@ describe("dispatchEvent", () => {
 
         expect(handle).toHaveBeenCalledTimes(1);
         expect(handle).toHaveBeenCalledWith(context, {
+            enabled: true,
             severity: "high",
             message: "hello",
         });

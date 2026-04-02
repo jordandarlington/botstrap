@@ -48,7 +48,7 @@ describe("resolveConfigs", () => {
             {
                 path: "risk-predictor-config",
                 config: {
-                    enabled: true,
+                    enabled: false,
                     minimumSeverity: "MEDIUM",
                     teamsNotification: true,
                     riskDefinition: "https://confluence.example.com/risk-definition",

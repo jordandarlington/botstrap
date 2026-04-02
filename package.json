@@ -1,22 +1,25 @@
 {
   "name": "botstrap",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Modular GitHub Bot Platform",
   "main": "app.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "probot run ./app.js",
+    "webhook-proxy": "npx smee-client --url \"$WEBHOOK_PROXY_URL\" --path /api/github/webhooks --port \"$PORT\""
   },
   "keywords": [],
-  "author": "",
+  "author": "Bots Gone Wild",
   "license": "ISC",
   "dependencies": {
     "js-yaml": "^4.1.1",
     "probot": "^14.3.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "smee-client": "^5.0.0"
   }
 }

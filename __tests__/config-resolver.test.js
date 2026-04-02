@@ -10,22 +10,25 @@ describe("resolveConfigs", () => {
         jest.clearAllMocks();
     });
 
-    it("returns an empty list when no modules are subscribed", async () => {
-        const result = await resolveConfigs({}, undefined);
+    it("throws when botstrap config has no modules array", async () => {
+        getRepoConfig.mockResolvedValueOnce({});
 
-        expect(result).toEqual([]);
-        expect(getRepoConfig).not.toHaveBeenCalled();
+        await expect(resolveConfigs({})).rejects.toThrow(
+            "Invalid botstrap configuration: 'modules' key is missing",
+        );
     });
 
     it("loads config from repo when .github config exists", async () => {
         const context = { repo: "sample" };
+        const botstrapConfig = { modules: ["global-config"] };
         const repoConfig = { minimumSeverity: "LOW", teamsNotification: false };
-        getRepoConfig.mockResolvedValue(repoConfig);
+        getRepoConfig.mockResolvedValueOnce(botstrapConfig).mockResolvedValueOnce(repoConfig);
 
-        const result = await resolveConfigs(context, ["global-config"]);
+        const result = await resolveConfigs(context);
 
-        expect(getRepoConfig).toHaveBeenCalledTimes(1);
-        expect(getRepoConfig).toHaveBeenCalledWith(context, ".github/global-config.yml");
+        expect(getRepoConfig).toHaveBeenCalledTimes(2);
+        expect(getRepoConfig).toHaveBeenNthCalledWith(1, context, ".github/botstrap.yml");
+        expect(getRepoConfig).toHaveBeenNthCalledWith(2, context, ".github/global-config.yml");
         expect(result).toEqual([
             {
                 path: "global-config",
@@ -35,9 +38,11 @@ describe("resolveConfigs", () => {
     });
 
     it("falls back to default YAML config when repo config is missing", async () => {
-        getRepoConfig.mockResolvedValue(null);
+        getRepoConfig
+            .mockResolvedValueOnce({ modules: ["risk-predictor-config"] })
+            .mockResolvedValueOnce(null);
 
-        const result = await resolveConfigs({}, ["risk-predictor-config"]);
+        const result = await resolveConfigs({});
 
         expect(result).toEqual([
             {
@@ -52,20 +57,27 @@ describe("resolveConfigs", () => {
     });
 
     it("resolves only subscribed modules in resolver order", async () => {
-        getRepoConfig.mockResolvedValue(null);
+        getRepoConfig
+            .mockResolvedValueOnce({
+                modules: ["risk-predictor-config", "global-config"],
+            })
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null);
 
-        const result = await resolveConfigs({}, [
-            "risk-predictor-config",
-            "global-config",
-        ]);
+        const result = await resolveConfigs({});
 
         expect(result.map((entry) => entry.path)).toEqual([
             "global-config",
             "risk-predictor-config",
         ]);
-        expect(getRepoConfig).toHaveBeenNthCalledWith(1, {}, ".github/global-config.yml");
+        expect(getRepoConfig).toHaveBeenNthCalledWith(1, {}, ".github/botstrap.yml");
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             2,
+            {},
+            ".github/global-config.yml",
+        );
+        expect(getRepoConfig).toHaveBeenNthCalledWith(
+            3,
             {},
             ".github/risk-predictor-config.yml",
         );

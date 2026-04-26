@@ -15,7 +15,7 @@ describe("cli commands", () => {
     it("validates configured modules and warns for github-only modules", () => {
         const result = validateConfig({
             modules: {
-                "pull-request-greeting": {
+                "github-pull-request-initial-comment": {
                     enabled: true,
                     capabilities: {
                         "create-pull-request-comment": {
@@ -28,7 +28,7 @@ describe("cli commands", () => {
 
         expect(result.errors).toEqual([]);
         expect(result.warnings).toEqual([
-            "Module 'pull-request-greeting' is not CLI-enabled",
+            "Module 'github-pull-request-initial-comment' is not CLI-enabled",
         ]);
     });
 
@@ -38,7 +38,7 @@ describe("cli commands", () => {
                 "unknown-module": {
                     enabled: true,
                 },
-                "issue-greeting": {
+                "github-issue-initial-comment": {
                     enabled: true,
                     capabilities: {
                         "unknown-capability": {},
@@ -49,7 +49,7 @@ describe("cli commands", () => {
 
         expect(result.errors).toEqual([
             "Unknown module 'unknown-module'",
-            "Unknown capability 'unknown-capability' configured for module 'issue-greeting'",
+            "Unknown capability 'unknown-capability' configured for module 'github-issue-initial-comment'",
         ]);
     });
 
@@ -82,8 +82,8 @@ describe("cli commands", () => {
         );
 
         expect(result.created).toBe(true);
-        expect(createdConfig).toContain("pull-request-greeting");
-        expect(createdConfig).toContain("issue-greeting");
+        expect(createdConfig).toContain("github-pull-request-initial-comment");
+        expect(createdConfig).toContain("github-issue-initial-comment");
     });
 
     it("does not overwrite an existing config unless forced", async () => {
@@ -102,6 +102,6 @@ describe("cli commands", () => {
         expect(skippedResult.created).toBe(false);
         expect(skippedConfig).toBe("modules: {}\n");
         expect(forcedResult.created).toBe(true);
-        expect(forcedConfig).toContain("pull-request-greeting");
+        expect(forcedConfig).toContain("github-pull-request-initial-comment");
     });
 });

@@ -20,7 +20,7 @@ describe("resolveConfigs", () => {
 
     it("loads config from repo when .github config exists", async () => {
         const context = { repo: "sample" };
-        const botstrapConfig = { modules: ["pull-request-greeting-config"] };
+        const botstrapConfig = { modules: ["github-pull-request-initial-comment-config"] };
         const repoConfig = { enabled: true, body: "hello from repo config" };
         getRepoConfig.mockResolvedValueOnce(botstrapConfig).mockResolvedValueOnce(repoConfig);
 
@@ -28,10 +28,10 @@ describe("resolveConfigs", () => {
 
         expect(getRepoConfig).toHaveBeenCalledTimes(2);
         expect(getRepoConfig).toHaveBeenNthCalledWith(1, context, ".github/botstrap.yml");
-        expect(getRepoConfig).toHaveBeenNthCalledWith(2, context, ".github/pull-request-greeting-config.yml");
+        expect(getRepoConfig).toHaveBeenNthCalledWith(2, context, ".github/github-pull-request-initial-comment-config.yml");
         expect(result).toEqual([
             {
-                path: "pull-request-greeting-config",
+                path: "github-pull-request-initial-comment-config",
                 config: repoConfig,
             },
         ]);
@@ -39,14 +39,14 @@ describe("resolveConfigs", () => {
 
     it("falls back to default YAML config when repo config is missing", async () => {
         getRepoConfig
-            .mockResolvedValueOnce({ modules: ["issue-greeting-config"] })
+            .mockResolvedValueOnce({ modules: ["github-issue-initial-comment-config"] })
             .mockResolvedValueOnce(null);
 
         const result = await resolveConfigs({});
 
         expect(result).toEqual([
             {
-                path: "issue-greeting-config",
+                path: "github-issue-initial-comment-config",
                 config: {
                     enabled: true,
                     capabilities: {
@@ -62,7 +62,7 @@ describe("resolveConfigs", () => {
     it("resolves only subscribed modules in resolver order", async () => {
         getRepoConfig
             .mockResolvedValueOnce({
-                modules: ["unknown-config", "issue-greeting-config", "pull-request-greeting-config"],
+                modules: ["unknown-config", "github-issue-initial-comment-config", "github-pull-request-initial-comment-config"],
             })
             .mockResolvedValueOnce(null)
             .mockResolvedValueOnce(null);
@@ -70,19 +70,19 @@ describe("resolveConfigs", () => {
         const result = await resolveConfigs({});
 
         expect(result.map((entry) => entry.path)).toEqual([
-            "pull-request-greeting-config",
-            "issue-greeting-config",
+            "github-pull-request-initial-comment-config",
+            "github-issue-initial-comment-config",
         ]);
         expect(getRepoConfig).toHaveBeenNthCalledWith(1, {}, ".github/botstrap.yml");
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             2,
             {},
-            ".github/pull-request-greeting-config.yml",
+            ".github/github-pull-request-initial-comment-config.yml",
         );
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             3,
             {},
-            ".github/issue-greeting-config.yml",
+            ".github/github-issue-initial-comment-config.yml",
         );
     });
 });

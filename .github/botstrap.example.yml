@@ -1,11 +1,11 @@
 modules:
-  pull-request-greeting:
+  github-pull-request-initial-comment:
     enabled: true
     capabilities:
       create-pull-request-comment:
         body: "Thanks for opening this pull request. We'll take a look shortly."
 
-  issue-greeting:
+  github-issue-initial-comment:
     enabled: true
     capabilities:
       create-issue-comment:

@@ -9,11 +9,11 @@ describe("dispatchEvent", () => {
         const getRepoConfig = jest.fn().mockResolvedValue({
             global: { severity: "high" },
             modules: {
-                "pull-request-greeting": { enabled: true, message: "hello" },
+                "github-pull-request-initial-comment": { enabled: true, message: "hello" },
             },
         });
         const getModules = jest.fn().mockResolvedValue([
-            { "pull-request-greeting": { enabled: true, message: "hello" } },
+            { "github-pull-request-initial-comment": { enabled: true, message: "hello" } },
         ]);
 
         jest.doMock("../lib/utils/get-repo-config", () => ({
@@ -43,7 +43,7 @@ describe("dispatchEvent", () => {
             context,
             [
                 {
-                    path: "pull-request-greeting",
+                    path: "github-pull-request-initial-comment",
                     config: {
                         enabled: true,
                         message: "hello",

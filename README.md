@@ -12,8 +12,8 @@ Modules compose capabilities. Not every module or capability needs to support ev
 
 | Module | Runtime | Description |
 | --- | --- | --- |
-| `pull-request-greeting` | `github` | Posts an initial greeting on newly opened pull requests. |
-| `issue-greeting` | `github` | Posts an initial greeting on newly opened issues. |
+| `github-pull-request-initial-comment` | `github` | Posts an initial greeting on newly opened pull requests. |
+| `github-issue-initial-comment` | `github` | Posts an initial greeting on newly opened issues. |
 
 ## Current Capabilities
 
@@ -34,13 +34,13 @@ Example:
 
 ```yaml
 modules:
-  pull-request-greeting:
+  github-pull-request-initial-comment:
     enabled: true
     capabilities:
       create-pull-request-comment:
         body: "Thanks for opening this pull request. We'll take a look shortly."
 
-  issue-greeting:
+  github-issue-initial-comment:
     enabled: true
     capabilities:
       create-issue-comment:

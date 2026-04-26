@@ -51,6 +51,7 @@ describe("dispatchEvent", () => {
                 },
             ],
             "pull_request.opened",
+            { runtime: "github" },
         );
     });
 });

@@ -91,6 +91,26 @@ describe("runBots", () => {
         expect(result).toEqual(["comment-result"]);
     });
 
+    it("skips modules that do not support the requested runtime", async () => {
+        const handle = jest.fn().mockResolvedValue("module-result");
+
+        jest.doMock(pullRequestGreetingModulePath, () => ({
+            pullRequestGreetingModule: {
+                runtimes: ["github"],
+                handle,
+            },
+        }));
+
+        const { runBots } = require("../lib/utils/bot-runner");
+
+        const result = await runBots({}, [
+            { path: "pull-request-greeting", config: { enabled: true } },
+        ], null, { runtime: "cli" });
+
+        expect(handle).not.toHaveBeenCalled();
+        expect(result).toEqual([]);
+    });
+
     it("skips modules that do not expose a handle method or capabilities", async () => {
         const { runBots } = require("../lib/utils/bot-runner");
 

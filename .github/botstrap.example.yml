@@ -10,3 +10,15 @@ modules:
     capabilities:
       create-issue-comment:
         body: "Thanks for opening this issue. We'll take a look shortly."
+
+  github-branch-protection-status:
+    enabled: true
+    capabilities:
+      query-branch-protection-policy:
+        owner: interactive-investor
+        repo: botstrap
+        branches:
+          - main
+          - develop
+        # Prefer GITHUB_TOKEN in the environment. Use token only for local/private configs.
+        # token: ghp_replace_me

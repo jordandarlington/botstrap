@@ -62,8 +62,14 @@ describe("resolveConfigs", () => {
     it("resolves only subscribed modules in resolver order", async () => {
         getRepoConfig
             .mockResolvedValueOnce({
-                modules: ["unknown-config", "github-issue-initial-comment-config", "github-pull-request-initial-comment-config"],
+                modules: [
+                    "unknown-config",
+                    "github-issue-initial-comment-config",
+                    "github-branch-protection-status-config",
+                    "github-pull-request-initial-comment-config",
+                ],
             })
+            .mockResolvedValueOnce(null)
             .mockResolvedValueOnce(null)
             .mockResolvedValueOnce(null);
 
@@ -72,6 +78,7 @@ describe("resolveConfigs", () => {
         expect(result.map((entry) => entry.path)).toEqual([
             "github-pull-request-initial-comment-config",
             "github-issue-initial-comment-config",
+            "github-branch-protection-status-config",
         ]);
         expect(getRepoConfig).toHaveBeenNthCalledWith(1, {}, ".github/botstrap.yml");
         expect(getRepoConfig).toHaveBeenNthCalledWith(
@@ -83,6 +90,11 @@ describe("resolveConfigs", () => {
             3,
             {},
             ".github/github-issue-initial-comment-config.yml",
+        );
+        expect(getRepoConfig).toHaveBeenNthCalledWith(
+            4,
+            {},
+            ".github/github-branch-protection-status-config.yml",
         );
     });
 });

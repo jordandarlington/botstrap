@@ -1,0 +1,5 @@
+enabled: true
+capabilities:
+  query-branch-protection-policy:
+    branches:
+      - main

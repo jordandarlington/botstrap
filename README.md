@@ -14,6 +14,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | --- | --- | --- |
 | `github-pull-request-initial-comment` | `github` | Posts an initial greeting on newly opened pull requests. |
 | `github-issue-initial-comment` | `github` | Posts an initial greeting on newly opened issues. |
+| `github-branch-protection-status` | `cli` | Checks whether a GitHub branch has protection enabled and whether it is locked. |
 
 ## Current Capabilities
 
@@ -21,6 +22,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | --- | --- | --- |
 | `create-pull-request-comment` | `github` | Creates a comment on a GitHub pull request. |
 | `create-issue-comment` | `github` | Creates a comment on a GitHub issue. |
+| `query-branch-protection-policy` | `github`, `cli` | Queries the GitHub branch protection policy for a repository branch. |
 
 ## Configuration
 
@@ -45,6 +47,18 @@ modules:
     capabilities:
       create-issue-comment:
         body: "Thanks for opening this issue. We'll take a look shortly."
+
+  github-branch-protection-status:
+    enabled: true
+    capabilities:
+      query-branch-protection-policy:
+        owner: interactive-investor
+        repo: botstrap
+        branches:
+          - main
+          - develop
+        # Prefer GITHUB_TOKEN in the environment. Use token only for local/private configs.
+        # token: ghp_replace_me
 ```
 
 The example config lives at [.github/botstrap.example.yml](.github/botstrap.example.yml).
@@ -115,7 +129,22 @@ botstrap config validate
 botstrap config:validate
 ```
 
-Note: the CLI can list modules, list capabilities, validate config, and initialize config today. Running modules through the CLI is supported by the shared runner, but the current modules are marked `github` only, so `botstrap run <module>` will reject them until a module declares `cli` support.
+Check branch protection status from a local repo:
+
+```bash
+GITHUB_TOKEN=... botstrap run github-branch-protection-status
+```
+
+You can also override repository and branch settings from the CLI:
+
+```bash
+GITHUB_TOKEN=... botstrap run github-branch-protection-status \
+  --owner interactive-investor \
+  --repo botstrap \
+  --branches main,develop
+```
+
+The token is optional for public repositories, but private repositories need `GITHUB_TOKEN`, `--token`, or a `token` value in local config. Avoid committing real tokens to shared repo config.
 
 ## Development
 

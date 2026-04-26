@@ -10,6 +10,16 @@ const createPullRequestCommentCapabilityPath = path.resolve(
     "../lib/capabilities/create-pull-request-comment.js",
 );
 
+const githubBranchProtectionStatusModulePath = path.resolve(
+    __dirname,
+    "../lib/modules/github-branch-protection-status.js",
+);
+
+const queryBranchProtectionPolicyCapabilityPath = path.resolve(
+    __dirname,
+    "../lib/capabilities/query-branch-protection-policy.js",
+);
+
 describe("runBots", () => {
     beforeEach(() => {
         jest.resetModules();
@@ -109,6 +119,59 @@ describe("runBots", () => {
 
         expect(handle).not.toHaveBeenCalled();
         expect(result).toEqual([]);
+    });
+
+    it("lets cli runtime overrides win over capability config", async () => {
+        const handle = jest.fn().mockResolvedValue("status-result");
+
+        jest.doMock(githubBranchProtectionStatusModulePath, () => ({
+            githubBranchProtectionStatusModule: {
+                runtimes: ["cli"],
+                capabilities: [
+                    {
+                        key: "query-branch-protection-policy",
+                        config: {
+                            branch: "main",
+                        },
+                    },
+                ],
+            },
+        }));
+
+        jest.doMock(queryBranchProtectionPolicyCapabilityPath, () => ({
+            queryBranchProtectionPolicyCapability: {
+                runtimes: ["cli"],
+                handle,
+            },
+        }));
+
+        const { runBots } = require("../lib/utils/bot-runner");
+
+        const result = await runBots({}, [
+            {
+                path: "github-branch-protection-status",
+                config: {
+                    enabled: true,
+                    capabilities: {
+                        "query-branch-protection-policy": {
+                            branches: ["develop"],
+                        },
+                    },
+                    runtimeOverrides: {
+                        branches: ["release", "hotfix"],
+                    },
+                },
+            },
+        ], null, { runtime: "cli" });
+
+        expect(handle).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({
+                branches: ["release", "hotfix"],
+            }),
+            null,
+        );
+        expect(result).toEqual(["status-result"]);
     });
 
     it("skips modules that do not expose a handle method or capabilities", async () => {

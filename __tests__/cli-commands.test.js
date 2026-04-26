@@ -53,6 +53,26 @@ describe("cli commands", () => {
         ]);
     });
 
+    it("accepts the branch protection status module as cli-enabled", () => {
+        const result = validateConfig({
+            modules: {
+                "github-branch-protection-status": {
+                    enabled: true,
+                    capabilities: {
+                        "query-branch-protection-policy": {
+                            owner: "interactive-investor",
+                            repo: "botstrap",
+                            branches: ["main", "develop"],
+                        },
+                    },
+                },
+            },
+        });
+
+        expect(result.errors).toEqual([]);
+        expect(result.warnings).toEqual([]);
+    });
+
     it("throws a typed error when local config is missing", async () => {
         const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "botstrap-test-"));
 
@@ -84,6 +104,7 @@ describe("cli commands", () => {
         expect(result.created).toBe(true);
         expect(createdConfig).toContain("github-pull-request-initial-comment");
         expect(createdConfig).toContain("github-issue-initial-comment");
+        expect(createdConfig).toContain("github-branch-protection-status");
     });
 
     it("does not overwrite an existing config unless forced", async () => {

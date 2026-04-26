@@ -35,6 +35,28 @@ describe("createTeamsMessageCapability", () => {
         };
     }
 
+    function createIssueContext() {
+        return {
+            payload: {
+                action: "opened",
+                repository: {
+                    full_name: "interactive-investor/botstrap",
+                },
+                sender: {
+                    login: "jordan",
+                },
+                issue: {
+                    number: 24,
+                    title: "Something is broken",
+                    html_url: "https://github.com/interactive-investor/botstrap/issues/24",
+                },
+            },
+            log: {
+                info: jest.fn(),
+            },
+        };
+    }
+
     it("posts a Teams webhook with a default pull request payload", async () => {
         global.fetch.mockResolvedValue({
             ok: true,
@@ -74,6 +96,31 @@ describe("createTeamsMessageCapability", () => {
             "https://github.com/interactive-investor/botstrap/pull/42",
         );
         expect(result.status).toBe(200);
+    });
+
+    it("builds an issue payload with a link to the issue", () => {
+        const payload = buildTeamsPayload(createIssueContext());
+
+        expect(payload.title).toBe("Issue opened: Something is broken");
+        expect(payload.text).toContain("issue #24");
+        expect(payload.sections[0].facts).toEqual(expect.arrayContaining([
+            { name: "Repository", value: "interactive-investor/botstrap" },
+            { name: "Issue", value: "#24" },
+            { name: "Author", value: "jordan" },
+            { name: "Action", value: "opened" },
+        ]));
+        expect(payload.potentialAction).toEqual([
+            {
+                "@type": "OpenUri",
+                name: "Open issue",
+                targets: [
+                    {
+                        os: "default",
+                        uri: "https://github.com/interactive-investor/botstrap/issues/24",
+                    },
+                ],
+            },
+        ]);
     });
 
     it("falls back to TEAMS_WEBHOOK_URL from the environment", async () => {

@@ -39,19 +39,23 @@ describe("resolveConfigs", () => {
 
     it("falls back to default YAML config when repo config is missing", async () => {
         getRepoConfig
-            .mockResolvedValueOnce({ modules: ["github-issue-initial-comment-config"] })
+            .mockResolvedValueOnce({ modules: ["github-issue-initial-action-config"] })
             .mockResolvedValueOnce(null);
 
         const result = await resolveConfigs({});
 
         expect(result).toEqual([
             {
-                path: "github-issue-initial-comment-config",
+                path: "github-issue-initial-action-config",
                 config: {
                     enabled: true,
                     capabilities: {
                         "create-issue-comment": {
                             body: "Thanks for opening this issue. We'll take a look shortly.",
+                        },
+                        "create-teams-message": {
+                            title: "New issue opened",
+                            message: "A new issue was opened. Use the Teams action to view it in GitHub.",
                         },
                     },
                 },
@@ -64,7 +68,7 @@ describe("resolveConfigs", () => {
             .mockResolvedValueOnce({
                 modules: [
                     "unknown-config",
-                    "github-issue-initial-comment-config",
+                    "github-issue-initial-action-config",
                     "github-branch-protection-status-config",
                     "github-pull-request-initial-comment-config",
                 ],
@@ -77,7 +81,7 @@ describe("resolveConfigs", () => {
 
         expect(result.map((entry) => entry.path)).toEqual([
             "github-pull-request-initial-comment-config",
-            "github-issue-initial-comment-config",
+            "github-issue-initial-action-config",
             "github-branch-protection-status-config",
         ]);
         expect(getRepoConfig).toHaveBeenNthCalledWith(1, {}, ".github/botstrap.yml");
@@ -89,7 +93,7 @@ describe("resolveConfigs", () => {
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             3,
             {},
-            ".github/github-issue-initial-comment-config.yml",
+            ".github/github-issue-initial-action-config.yml",
         );
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             4,

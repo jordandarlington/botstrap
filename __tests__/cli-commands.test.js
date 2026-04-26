@@ -38,7 +38,7 @@ describe("cli commands", () => {
                 "unknown-module": {
                     enabled: true,
                 },
-                "github-issue-initial-comment": {
+                "github-issue-initial-action": {
                     enabled: true,
                     capabilities: {
                         "unknown-capability": {},
@@ -49,7 +49,7 @@ describe("cli commands", () => {
 
         expect(result.errors).toEqual([
             "Unknown module 'unknown-module'",
-            "Unknown capability 'unknown-capability' configured for module 'github-issue-initial-comment'",
+            "Unknown capability 'unknown-capability' configured for module 'github-issue-initial-action'",
         ]);
     });
 
@@ -103,7 +103,7 @@ describe("cli commands", () => {
 
         expect(result.created).toBe(true);
         expect(createdConfig).toContain("github-pull-request-initial-comment");
-        expect(createdConfig).toContain("github-issue-initial-comment");
+        expect(createdConfig).toContain("github-issue-initial-action");
         expect(createdConfig).toContain("github-branch-protection-status");
     });
 

@@ -1,4 +1,0 @@
-enabled: true
-capabilities:
-  create-issue-comment:
-    body: "Thanks for opening this issue. We'll take a look shortly."

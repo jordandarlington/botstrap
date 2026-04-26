@@ -1,0 +1,9 @@
+enabled: true
+capabilities:
+  create-issue-comment:
+    body: "Thanks for opening this issue. We'll take a look shortly."
+  create-teams-message:
+    title: "New issue opened"
+    message: "A new issue was opened. Use the Teams action to view it in GitHub."
+    # Prefer TEAMS_WEBHOOK_URL in the environment. Use webhookUrl only for local/private configs.
+    # webhookUrl: https://example.webhook.office.com/replace-me

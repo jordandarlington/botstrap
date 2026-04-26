@@ -13,7 +13,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | Module | Runtime | Description |
 | --- | --- | --- |
 | `github-pull-request-initial-comment` | `github` | Posts an initial greeting on newly opened pull requests. |
-| `github-issue-initial-comment` | `github` | Posts an initial greeting on newly opened issues. |
+| `github-issue-initial-action` | `github` | Posts an initial greeting on newly opened issues by posting a comment and Teams message. |
 | `github-branch-protection-status` | `cli` | Checks whether a GitHub branch has protection enabled and whether it is locked. |
 | `github-draft-pull-request-comment` | `github` | Comments on newly opened draft pull requests. |
 
@@ -45,11 +45,16 @@ modules:
       create-pull-request-comment:
         body: "Thanks for opening this pull request. We'll take a look shortly."
 
-  github-issue-initial-comment:
+  github-issue-initial-action:
     enabled: true
     capabilities:
       create-issue-comment:
         body: "Thanks for opening this issue. We'll take a look shortly."
+      create-teams-message:
+        title: "New issue opened"
+        message: "A new issue was opened. Use the Teams action to view it in GitHub."
+        # Prefer TEAMS_WEBHOOK_URL in the environment. Use webhookUrl only for local/private configs.
+        # webhookUrl: https://example.webhook.office.com/replace-me
 
   github-branch-protection-status:
     enabled: true

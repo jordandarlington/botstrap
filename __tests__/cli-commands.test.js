@@ -59,7 +59,7 @@ describe("cli commands", () => {
                 "github-branch-protection-status": {
                     enabled: true,
                     capabilities: {
-                        "query-branch-protection-policy": {
+                        "read-branch-protection-policy": {
                             owner: "interactive-investor",
                             repo: "botstrap",
                             branches: ["main", "develop"],

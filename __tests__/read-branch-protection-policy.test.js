@@ -1,10 +1,10 @@
 const {
     getBranches,
     normalizeBranchProtectionPolicy,
-    queryBranchProtectionPolicyCapability,
-} = require("../lib/capabilities/query-branch-protection-policy");
+    readBranchProtectionPolicyCapability,
+} = require("../lib/capabilities/read-branch-protection-policy");
 
-describe("queryBranchProtectionPolicyCapability", () => {
+describe("readBranchProtectionPolicyCapability", () => {
     afterEach(() => {
         delete global.fetch;
         delete process.env.GITHUB_TOKEN;
@@ -31,7 +31,7 @@ describe("queryBranchProtectionPolicyCapability", () => {
             },
         };
 
-        const result = await queryBranchProtectionPolicyCapability.handle(context, {
+        const result = await readBranchProtectionPolicyCapability.handle(context, {
             owner: "interactive-investor",
             repo: "botstrap",
             branch: "main",
@@ -73,7 +73,7 @@ describe("queryBranchProtectionPolicyCapability", () => {
             },
         };
 
-        const result = await queryBranchProtectionPolicyCapability.handle(context, {
+        const result = await readBranchProtectionPolicyCapability.handle(context, {
             owner: "interactive-investor",
             repo: "botstrap",
             branch: "main",
@@ -106,7 +106,7 @@ describe("queryBranchProtectionPolicyCapability", () => {
             },
         };
 
-        const result = await queryBranchProtectionPolicyCapability.handle(context, {
+        const result = await readBranchProtectionPolicyCapability.handle(context, {
             owner: "interactive-investor",
             repo: "botstrap",
             branch: "main",
@@ -151,7 +151,7 @@ describe("queryBranchProtectionPolicyCapability", () => {
             },
         };
 
-        const result = await queryBranchProtectionPolicyCapability.handle(context, {
+        const result = await readBranchProtectionPolicyCapability.handle(context, {
             owner: "interactive-investor",
             repo: "botstrap",
             branches: ["main", "develop"],

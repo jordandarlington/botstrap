@@ -22,7 +22,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | --- | --- | --- |
 | `create-pull-request-comment` | `github` | Creates a comment on a GitHub pull request. |
 | `create-issue-comment` | `github` | Creates a comment on a GitHub issue. |
-| `query-branch-protection-policy` | `github`, `cli` | Queries the GitHub branch protection policy for a repository branch. |
+| `read-branch-protection-policy` | `github`, `cli` | Reads GitHub branch protection policies for one or more repository branches. |
 
 ## Configuration
 
@@ -51,7 +51,7 @@ modules:
   github-branch-protection-status:
     enabled: true
     capabilities:
-      query-branch-protection-policy:
+      read-branch-protection-policy:
         owner: interactive-investor
         repo: botstrap
         branches:

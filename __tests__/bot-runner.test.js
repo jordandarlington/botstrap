@@ -15,9 +15,9 @@ const githubBranchProtectionStatusModulePath = path.resolve(
     "../lib/modules/github-branch-protection-status.js",
 );
 
-const queryBranchProtectionPolicyCapabilityPath = path.resolve(
+const readBranchProtectionPolicyCapabilityPath = path.resolve(
     __dirname,
-    "../lib/capabilities/query-branch-protection-policy.js",
+    "../lib/capabilities/read-branch-protection-policy.js",
 );
 
 describe("runBots", () => {
@@ -129,7 +129,7 @@ describe("runBots", () => {
                 runtimes: ["cli"],
                 capabilities: [
                     {
-                        key: "query-branch-protection-policy",
+                        key: "read-branch-protection-policy",
                         config: {
                             branch: "main",
                         },
@@ -138,8 +138,8 @@ describe("runBots", () => {
             },
         }));
 
-        jest.doMock(queryBranchProtectionPolicyCapabilityPath, () => ({
-            queryBranchProtectionPolicyCapability: {
+        jest.doMock(readBranchProtectionPolicyCapabilityPath, () => ({
+            readBranchProtectionPolicyCapability: {
                 runtimes: ["cli"],
                 handle,
             },
@@ -153,7 +153,7 @@ describe("runBots", () => {
                 config: {
                     enabled: true,
                     capabilities: {
-                        "query-branch-protection-policy": {
+                        "read-branch-protection-policy": {
                             branches: ["develop"],
                         },
                     },

@@ -1,5 +1,5 @@
 enabled: true
 capabilities:
-  query-branch-protection-policy:
+  read-branch-protection-policy:
     branches:
       - main

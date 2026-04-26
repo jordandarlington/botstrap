@@ -22,3 +22,9 @@ modules:
           - develop
         # Prefer GITHUB_TOKEN in the environment. Use token only for local/private configs.
         # token: ghp_replace_me
+
+  github-draft-pull-request-comment:
+    enabled: true
+    capabilities:
+      create-pull-request-comment:
+        body: "Thanks for opening this draft pull request. We'll wait until it is ready for review."

@@ -124,5 +124,6 @@ describe("cli commands", () => {
         expect(skippedConfig).toBe("modules: {}\n");
         expect(forcedResult.created).toBe(true);
         expect(forcedConfig).toContain("github-pull-request-initial-comment");
+        expect(forcedConfig).toContain("github-draft-pull-request-comment");
     });
 });

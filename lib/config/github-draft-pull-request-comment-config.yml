@@ -1,0 +1,4 @@
+enabled: true
+capabilities:
+  create-pull-request-comment:
+    body: "Thanks for opening this draft pull request. We'll wait until it is ready for review."

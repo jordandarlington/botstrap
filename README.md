@@ -15,6 +15,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | `github-pull-request-initial-comment` | `github` | Posts an initial greeting on newly opened pull requests. |
 | `github-issue-initial-comment` | `github` | Posts an initial greeting on newly opened issues. |
 | `github-branch-protection-status` | `cli` | Checks whether a GitHub branch has protection enabled and whether it is locked. |
+| `github-draft-pull-request-comment` | `github` | Comments on newly opened draft pull requests. |
 
 ## Current Capabilities
 
@@ -23,6 +24,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | `create-pull-request-comment` | `github` | Creates a comment on a GitHub pull request. |
 | `create-issue-comment` | `github` | Creates a comment on a GitHub issue. |
 | `read-branch-protection-policy` | `github`, `cli` | Reads GitHub branch protection policies for one or more repository branches. |
+| `read-pull-request` | `github`, `cli` | Reads GitHub pull request details. |
 
 ## Configuration
 
@@ -59,6 +61,12 @@ modules:
           - develop
         # Prefer GITHUB_TOKEN in the environment. Use token only for local/private configs.
         # token: ghp_replace_me
+
+  github-draft-pull-request-comment:
+    enabled: true
+    capabilities:
+      create-pull-request-comment:
+        body: "Thanks for opening this draft pull request. We'll wait until it is ready for review."
 ```
 
 The example config lives at [.github/botstrap.example.yml](.github/botstrap.example.yml).
@@ -75,6 +83,7 @@ Supported GitHub events:
 
 - `pull_request.opened`
 - `pull_request.reopened`
+- `pull_request.converted_to_draft`
 - `issues.opened`
 - `issue_comment.created`
 

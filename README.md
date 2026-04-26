@@ -23,6 +23,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | --- | --- | --- |
 | `create-pull-request-comment` | `github` | Creates a comment on a GitHub pull request. |
 | `create-issue-comment` | `github` | Creates a comment on a GitHub issue. |
+| `create-teams-message` | `github` | Creates a Microsoft Teams webhook message. |
 | `read-branch-protection-policy` | `github`, `cli` | Reads GitHub branch protection policies for one or more repository branches. |
 | `read-pull-request` | `github`, `cli` | Reads GitHub pull request details. |
 

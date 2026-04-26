@@ -20,18 +20,18 @@ describe("resolveConfigs", () => {
 
     it("loads config from repo when .github config exists", async () => {
         const context = { repo: "sample" };
-        const botstrapConfig = { modules: ["global-config"] };
-        const repoConfig = { minimumSeverity: "LOW", teamsNotification: false };
+        const botstrapConfig = { modules: ["pull-request-greeting-config"] };
+        const repoConfig = { enabled: true, body: "hello from repo config" };
         getRepoConfig.mockResolvedValueOnce(botstrapConfig).mockResolvedValueOnce(repoConfig);
 
         const result = await resolveConfigs(context);
 
         expect(getRepoConfig).toHaveBeenCalledTimes(2);
         expect(getRepoConfig).toHaveBeenNthCalledWith(1, context, ".github/botstrap.yml");
-        expect(getRepoConfig).toHaveBeenNthCalledWith(2, context, ".github/global-config.yml");
+        expect(getRepoConfig).toHaveBeenNthCalledWith(2, context, ".github/pull-request-greeting-config.yml");
         expect(result).toEqual([
             {
-                path: "global-config",
+                path: "pull-request-greeting-config",
                 config: repoConfig,
             },
         ]);
@@ -39,19 +39,21 @@ describe("resolveConfigs", () => {
 
     it("falls back to default YAML config when repo config is missing", async () => {
         getRepoConfig
-            .mockResolvedValueOnce({ modules: ["risk-predictor-config"] })
+            .mockResolvedValueOnce({ modules: ["issue-greeting-config"] })
             .mockResolvedValueOnce(null);
 
         const result = await resolveConfigs({});
 
         expect(result).toEqual([
             {
-                path: "risk-predictor-config",
+                path: "issue-greeting-config",
                 config: {
-                    enabled: false,
-                    minimumSeverity: "MEDIUM",
-                    teamsNotification: true,
-                    riskDefinition: "https://confluence.example.com/risk-definition",
+                    enabled: true,
+                    capabilities: {
+                        "create-issue-comment": {
+                            body: "Thanks for opening this issue. We'll take a look shortly.",
+                        },
+                    },
                 },
             },
         ]);
@@ -60,7 +62,7 @@ describe("resolveConfigs", () => {
     it("resolves only subscribed modules in resolver order", async () => {
         getRepoConfig
             .mockResolvedValueOnce({
-                modules: ["risk-predictor-config", "global-config"],
+                modules: ["unknown-config", "issue-greeting-config", "pull-request-greeting-config"],
             })
             .mockResolvedValueOnce(null)
             .mockResolvedValueOnce(null);
@@ -68,19 +70,19 @@ describe("resolveConfigs", () => {
         const result = await resolveConfigs({});
 
         expect(result.map((entry) => entry.path)).toEqual([
-            "global-config",
-            "risk-predictor-config",
+            "pull-request-greeting-config",
+            "issue-greeting-config",
         ]);
         expect(getRepoConfig).toHaveBeenNthCalledWith(1, {}, ".github/botstrap.yml");
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             2,
             {},
-            ".github/global-config.yml",
+            ".github/pull-request-greeting-config.yml",
         );
         expect(getRepoConfig).toHaveBeenNthCalledWith(
             3,
             {},
-            ".github/risk-predictor-config.yml",
+            ".github/issue-greeting-config.yml",
         );
     });
 });

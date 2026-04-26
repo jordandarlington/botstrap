@@ -9,6 +9,10 @@ module.exports = (app) => {
         await dispatchEvent("pull_request.reopened", context);
     });
 
+    app.on("issues.opened", async (context) => {
+        await dispatchEvent("issues.opened", context);
+    });
+
     app.on("issue_comment.created", async (context) => {
         await dispatchEvent("issue_comment.created", context);
     });

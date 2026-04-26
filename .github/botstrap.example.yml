@@ -1,0 +1,12 @@
+modules:
+  pull-request-greeting:
+    enabled: true
+    capabilities:
+      create-pull-request-comment:
+        body: "Thanks for opening this pull request. We'll take a look shortly."
+
+  issue-greeting:
+    enabled: true
+    capabilities:
+      create-issue-comment:
+        body: "Thanks for opening this issue. We'll take a look shortly."

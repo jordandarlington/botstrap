@@ -5,30 +5,27 @@ describe("dispatchEvent", () => {
     });
 
     it("calls enabled modules that support the incoming event", async () => {
-        const handle = jest.fn().mockResolvedValue(undefined);
+        const runBots = jest.fn().mockResolvedValue([]);
         const getRepoConfig = jest.fn().mockResolvedValue({
             global: { severity: "high" },
             modules: {
-                "risk-predictor": { enabled: true, message: "hello" },
+                "pull-request-greeting": { enabled: true, message: "hello" },
             },
         });
+        const getModules = jest.fn().mockResolvedValue([
+            { "pull-request-greeting": { enabled: true, message: "hello" } },
+        ]);
 
         jest.doMock("../lib/utils/get-repo-config", () => ({
             getRepoConfig,
         }));
 
-        jest.doMock("../lib/utils/safe-run", () => ({
-            safeRun: jest.fn(async (_moduleKey, fn) => fn()),
+        jest.doMock("../lib/core/registry", () => ({
+            getModules,
         }));
 
-        jest.doMock("../lib/core/registry", () => ({
-            moduleRegistry: [
-                {
-                    key: "risk-predictor",
-                    events: ["pull_request.opened"],
-                    handle,
-                },
-            ],
+        jest.doMock("../lib/utils/bot-runner", () => ({
+            runBots,
         }));
 
         const { dispatchEvent } = require("../lib/core/dispatch");
@@ -41,11 +38,19 @@ describe("dispatchEvent", () => {
 
         await dispatchEvent("pull_request.opened", context);
 
-        expect(handle).toHaveBeenCalledTimes(1);
-        expect(handle).toHaveBeenCalledWith(context, {
-            enabled: true,
-            severity: "high",
-            message: "hello",
-        });
+        expect(runBots).toHaveBeenCalledTimes(1);
+        expect(runBots).toHaveBeenCalledWith(
+            context,
+            [
+                {
+                    path: "pull-request-greeting",
+                    config: {
+                        enabled: true,
+                        message: "hello",
+                    },
+                },
+            ],
+            "pull_request.opened",
+        );
     });
 });

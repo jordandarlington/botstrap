@@ -1,0 +1,4 @@
+enabled: true
+capabilities:
+  create-pull-request-comment:
+    body: "Thanks for opening this pull request. We'll take a look shortly."

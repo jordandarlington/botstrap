@@ -11,6 +11,11 @@
     "dev": "probot run ./app.js",
     "webhook-proxy": "npx smee-client --url \"$WEBHOOK_PROXY_URL\" --path /api/github/webhooks --port \"$PORT\""
   },
+  "jest": {
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
+  },
   "keywords": [],
   "author": "Bots Gone Wild",
   "license": "ISC",

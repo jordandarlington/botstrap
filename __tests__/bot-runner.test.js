@@ -1,8 +1,13 @@
 const path = require("node:path");
 
-const riskPredictorModulePath = path.resolve(
+const pullRequestGreetingModulePath = path.resolve(
     __dirname,
-    "../lib/modules/risk-predictor.js",
+    "../lib/modules/pull-request-greeting.js",
+);
+
+const createPullRequestCommentCapabilityPath = path.resolve(
+    __dirname,
+    "../lib/capabilities/create-pull-request-comment.js",
 );
 
 describe("runBots", () => {
@@ -20,10 +25,10 @@ describe("runBots", () => {
     });
 
     it("calls nested module handle and appends each return value", async () => {
-        const handle = jest.fn().mockResolvedValue("risk-result");
+        const handle = jest.fn().mockResolvedValue("module-result");
 
-        jest.doMock(riskPredictorModulePath, () => ({
-            riskPredictorModule: { handle },
+        jest.doMock(pullRequestGreetingModulePath, () => ({
+            pullRequestGreetingModule: { handle },
         }));
 
         const { runBots } = require("../lib/utils/bot-runner");
@@ -31,39 +36,86 @@ describe("runBots", () => {
         const config = { message: "hello" };
 
         const result = await runBots(context, [
-            { path: "risk-predictor", config },
+            { path: "pull-request-greeting", config },
         ]);
 
         expect(handle).toHaveBeenCalledTimes(1);
-        expect(handle).toHaveBeenCalledWith(context, config);
-        expect(result).toEqual(["risk-result"]);
+        expect(handle).toHaveBeenCalledWith(context, config, undefined);
+        expect(result).toEqual(["module-result"]);
     });
 
-    it("skips modules that do not expose a handle method", async () => {
+    it("calls configured capabilities and appends each return value", async () => {
+        const handle = jest.fn().mockResolvedValue("comment-result");
+
+        jest.doMock(pullRequestGreetingModulePath, () => ({
+            pullRequestGreetingModule: {
+                capabilities: [
+                    {
+                        key: "create-pull-request-comment",
+                        config: {
+                            body: "default body",
+                        },
+                    },
+                ],
+            },
+        }));
+
+        jest.doMock(createPullRequestCommentCapabilityPath, () => ({
+            createPullRequestCommentCapability: { handle },
+        }));
+
+        const { runBots } = require("../lib/utils/bot-runner");
+        const context = {};
+        const config = {
+            enabled: true,
+            capabilities: {
+                "create-pull-request-comment": {
+                    body: "configured body",
+                },
+            },
+        };
+
+        const result = await runBots(context, [
+            { path: "pull-request-greeting", config },
+        ], "pull_request.opened");
+
+        expect(handle).toHaveBeenCalledTimes(1);
+        expect(handle).toHaveBeenCalledWith(
+            context,
+            expect.objectContaining({
+                body: "configured body",
+                enabled: true,
+            }),
+            "pull_request.opened",
+        );
+        expect(result).toEqual(["comment-result"]);
+    });
+
+    it("skips modules that do not expose a handle method or capabilities", async () => {
         const { runBots } = require("../lib/utils/bot-runner");
 
         const result = await runBots({}, [
-            { path: "branch-locker", config: {} },
+            { path: "not-a-module", config: {} },
         ]);
 
         expect(result).toEqual([]);
     });
 
     it("continues processing when one module cannot be loaded", async () => {
-        const handle = jest.fn().mockResolvedValue("risk-result");
+        const handle = jest.fn().mockResolvedValue("module-result");
 
-        jest.doMock(riskPredictorModulePath, () => ({
-            riskPredictorModule: { handle },
+        jest.doMock(pullRequestGreetingModulePath, () => ({
+            pullRequestGreetingModule: { handle },
         }));
 
         const { runBots } = require("../lib/utils/bot-runner");
 
         const result = await runBots({}, [
             { path: "missing-module", config: {} },
-            { path: "risk-predictor", config: { any: true } },
+            { path: "pull-request-greeting", config: { any: true } },
         ]);
 
         expect(handle).toHaveBeenCalledTimes(1);
-        expect(result).toEqual(["risk-result"]);
+        expect(result).toEqual(["module-result"]);
     });
 });

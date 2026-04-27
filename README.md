@@ -22,6 +22,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | Capability | Runtime | Description |
 | --- | --- | --- |
 | `create-pull-request-comment` | `github` | Creates a comment on a GitHub pull request. |
+| `create-issue` | `github` | Creates a GitHub issue. |
 | `create-issue-comment` | `github` | Creates a comment on a GitHub issue. |
 | `create-teams-message` | `github` | Creates a Microsoft Teams webhook message. |
 | `read-branch-protection-policy` | `github`, `cli` | Reads GitHub branch protection policies for one or more repository branches. |
@@ -73,6 +74,17 @@ modules:
     capabilities:
       create-pull-request-comment:
         body: "Thanks for opening this draft pull request. We'll wait until it is ready for review."
+```
+
+The `create-issue` capability can be added to a custom module configuration when that module should open a new GitHub issue:
+
+```yaml
+capabilities:
+  create-issue:
+    title: "Follow up required"
+    body: "A Botstrap module detected something that needs attention."
+    labels:
+      - automation
 ```
 
 The example config lives at [.github/botstrap.example.yml](.github/botstrap.example.yml).

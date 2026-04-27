@@ -20,4 +20,8 @@ module.exports = (app) => {
     app.on("issue_comment.created", async (context) => {
         await dispatchEvent("issue_comment.created", context);
     });
+
+    app.on("check_run.completed", async (context) => {
+        await dispatchEvent("check_run.completed", context);
+    });
 };

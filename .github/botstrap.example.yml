@@ -33,3 +33,18 @@ modules:
     capabilities:
       create-pull-request-comment:
         body: "Thanks for opening this draft pull request. We'll wait until it is ready for review."
+
+  github-check-run-failure-issue:
+    enabled: false
+    checkRunNames:
+      - "ci"
+      - "lint"
+    capabilities:
+      create-pull-request-comment:
+        body: "A configured check run failed for this pull request. A follow-up issue will be created to track the fix."
+      create-issue:
+        title: "Fix failing check run"
+        body: "A configured check run failed on a pull request and needs follow-up."
+        labels:
+          - automation
+          - ci-failure

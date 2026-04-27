@@ -16,6 +16,7 @@ Modules compose capabilities. Not every module or capability needs to support ev
 | `github-issue-initial-action` | `github` | Posts an initial greeting on newly opened issues by posting a comment and Teams message. |
 | `github-branch-protection-status` | `cli` | Checks whether a GitHub branch has protection enabled and whether it is locked. |
 | `github-draft-pull-request-comment` | `github` | Comments on newly opened draft pull requests. |
+| `github-check-run-failure-issue` | `github` | Comments on pull requests when a configured check run fails and creates a follow-up issue. |
 
 ## Current Capabilities
 
@@ -74,6 +75,21 @@ modules:
     capabilities:
       create-pull-request-comment:
         body: "Thanks for opening this draft pull request. We'll wait until it is ready for review."
+
+  github-check-run-failure-issue:
+    enabled: false
+    checkRunNames:
+      - "ci"
+      - "lint"
+    capabilities:
+      create-pull-request-comment:
+        body: "A configured check run failed for this pull request. A follow-up issue will be created to track the fix."
+      create-issue:
+        title: "Fix failing check run"
+        body: "A configured check run failed on a pull request and needs follow-up."
+        labels:
+          - automation
+          - ci-failure
 ```
 
 The `create-issue` capability can be added to a custom module configuration when that module should open a new GitHub issue:
@@ -104,6 +120,7 @@ Supported GitHub events:
 - `pull_request.converted_to_draft`
 - `issues.opened`
 - `issue_comment.created`
+- `check_run.completed`
 
 The current greeting modules run through the `github` runtime only.
 
